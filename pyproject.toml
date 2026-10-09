@@ -56,6 +56,10 @@ dependencies = [
 [tool.uv]
 required-version = ">=0.8.4"
 
+[project.optional-dependencies]
+qwen38-hf = ["transformers>=5.9", "peft>=0.18", "accelerate>=1.0"]
+qwen38-fsdp2 = ["torch>=2.11", "transformers>=5.9", "peft>=0.18", "accelerate>=1.0"]
+
 [tool.uv.sources]
 nv-grouped-gemm = { git = "https://github.com/fanshiqing/grouped_gemm.git" }
 

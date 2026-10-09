@@ -21,6 +21,8 @@
 - SFT data prep (ZH): `docs/SFT_DATA_PREPARATION.md`
 - SFT data prep (EN): `docs/SFT_DATA_PREPARATION_EN.md`
 - API modules: `docs/MODULES.md`
+- Qwen3.8 HF LoRA SFT (ZH): [DP guide](docs/QWEN3_8_LORA_SFT_ZH.md)
+- Qwen3.8 FSDP2 LoRA SFT, 8 x A800 (ZH): [FSDP2 guide](docs/QWEN3_8_FSDP2_LORA_ZH.md)
 
 ## Installation
 

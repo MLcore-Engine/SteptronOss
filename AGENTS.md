@@ -306,6 +306,10 @@ Improve pass:
 
 ## 10. Debugging Priors
 
+- The Qwen3.8 FSDP2 LoRA backend requires torch>=2.11; its FP32 adapters and BF16 frozen weights use separate FSDP groups. Never install the native gradient buffer hooks or ZeRO-1 on DTensor parameters. See `docs/QWEN3_8_FSDP2_LORA_ZH.md` for setup and resume limitations.
+- FSDP2 adapter groups with `reshard_after_forward=False` may leave ordinary gathered tensors registered after a forward without backward. Reshard every FSDP module before checkpoint/export/restore, only between steps. `FSDPModule.reshard()` is not recursive.
+- Meta initialization must restore non-persistent buffers (including RoPE) as well as persistent state. Single-rank fake process-group tests exercise DTensor lifecycle but do not establish multi-GPU correctness or long-context capacity.
+
 - `steptronoss.utils.memory_tracker.CMT` only records when `MEM_DIAGNOSE=1`
 - If training hangs on `Waiting for debugger... ip: ... rank: 56`, check for a stray `debug(56)` in `steptronoss/core/trainers/lm_trainer.py`
 - TorchDynamo graph breaks are often triggered by `Tensor.item()` in optimizable helpers; prefer tensor-safe checks like masked `amax` + `torch._assert`

@@ -7,6 +7,25 @@ export PYTHONPATH="$repo_root${PYTHONPATH:+:$PYTHONPATH}"
 
 : "${QWEN38_DATA:?Set QWEN38_DATA to your messages JSONL file}"
 QWEN38_MODEL="${QWEN38_MODEL:-Qwen/Qwen3.8-27B}"
+if [[ "${QWEN38_OFFLINE:-0}" == 1 ]]; then
+    export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 USE_HUB_KERNELS=0 WANDB_MODE=offline
+    [[ -d "$QWEN38_MODEL" ]] || { printf 'Offline mode requires QWEN38_MODEL to be a local model directory\n' >&2; exit 2; }
+    python - "$QWEN38_MODEL" <<'PY'
+import json
+from pathlib import Path
+import sys
+root = Path(sys.argv[1])
+required = [root / 'config.json', root / 'tokenizer.json', root / 'tokenizer_config.json']
+index = root / 'model.safetensors.index.json'
+if index.is_file():
+    required += [root / shard for shard in set(json.loads(index.read_text())['weight_map'].values())]
+else:
+    required.append(root / 'model.safetensors')
+missing = [str(path) for path in required if not path.is_file()]
+if missing:
+    raise SystemExit(f'Incomplete local model: {missing}')
+PY
+fi
 QWEN38_GPUS="${QWEN38_GPUS:-8}"
 QWEN38_LENGTH="${QWEN38_LENGTH:-2048}"
 QWEN38_BATCH="${QWEN38_BATCH:-32}"

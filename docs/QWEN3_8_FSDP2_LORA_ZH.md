@@ -54,6 +54,9 @@ nvidia-smi topo -m
 SDPA/FlashAttention 只管理全注意力层，不能替代 GDN 算子。
 安装脚本尚未在 A800 主机运行，编译和 CUDA ABI 是否匹配需要现场验证。
 
+服务器无法访问公网时，按 [离线运行说明](QWEN3_8_OFFLINE_ZH.md) 在联网 Linux
+机器准备 wheelhouse，复制代码、完整模型和数据后使用离线安装/启动模式。
+
 rank 0 需要容纳完整 CPU 基础权重，另有加载、token 数据和 Python 开销。
 主机 RAM 建议至少 128GB、有条件采用 256GB；这是容量规划，不是实测峰值。
 本版本将 token JSONL 加载到每个 rank 的内存，超大数据集需要另外接入 mmap 数据管线。
